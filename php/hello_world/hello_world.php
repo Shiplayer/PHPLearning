@@ -16,7 +16,7 @@ function Add($a, $b){
 	$args_list = func_get_args(); // func_get_args() - return array of args
 	for($i = 0; $i < $number; $i++){
 //		if(!is_callable($args_list[$i])) // is_callable() is function that can verify that type the variable can be called as a function 
-		print "args[$i]: " . $args_list[$i] . "\n";
+		print "args[$i]: " . $args_list[$i] . "\n"; //the same thing that echo
 	}
 //	$args_list = func_get_args();
 	return $a + $b; // return a + b
