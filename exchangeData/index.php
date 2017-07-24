@@ -13,11 +13,21 @@
 </h1>
 <div>
     <div>
-        <label for="user">user:</label> <input type="text" id="user">
-        <label for="password">password:</label> <input type="password" id="password">
+        <div class="form">
+            <label class="userPassForm" for="user">user:</label>
+            <label class="userPassForm" for="password">password:</label>
+        </div>
+        <div class="passForm">
+            <input type="text" id="user">
+            <input type="password" id="password">
+        </div>
+
     </div>
-    <label for="textField">db request:</label>
-    <textarea id="textField" cols="40" rows="4"></textarea>
+    <div>
+        <label for="textField" style="vertical-align: top;">db request:</label>
+        <textarea id="textField" cols="40" rows="4"></textarea>
+    </div>
+
     <input type="button" onclick="submitButton()" value="submit">
 </div>
 <div class="response">
