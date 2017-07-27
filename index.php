@@ -4,7 +4,7 @@
 
 <html>
 <head>
-
+    <title>Main page</title>
 </head>
 <body>
 <h1>Select page with examples:</h1>
