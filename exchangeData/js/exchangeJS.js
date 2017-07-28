@@ -20,6 +20,10 @@ function callback(text){
 
 }
 
+function callbackUnauthorized(text){
+    console.log(text);
+}
+
 function submitButton(){
     console.log("submit");
     var user = document.getElementById("user");
@@ -28,8 +32,12 @@ function submitButton(){
     var url = "dbexchange.php?query=" + encodeURI(textField.value) + "&user=" + encodeURI(user.value) + "&password=" + encodeURI(password.value);
     var xmlHTTP = new XMLHttpRequest();
     xmlHTTP.onreadystatechange = function() {
+        console.log(xmlHTTP.status);
         if (xmlHTTP.readyState === 4 && xmlHTTP.status === 200) {
             callback(xmlHTTP.responseText)
+        }
+        if(xmlHTTP.readyState === 4 && xmlHTTP.status === 401) {
+            callbackUnauthorized(xmlHTTP.responseText);
         }
     };
     xmlHTTP.open("GET", url, true);
