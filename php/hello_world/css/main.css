@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+div.head {
+    height: 140px;
+    background: red;
+}
+
+div.body {
+    background: url("../img/fon.jpg") no-repeat 100%;
+}
+
+div.separate {
+
+}
+
