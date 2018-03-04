@@ -103,6 +103,7 @@ var Objects = {
 function ObjectsOnCanvas(type, point, text) {
     this.leftDepth = 0;
     this.rightDepth = 0;
+    this.depth = 0;
     this.type = type;
     this.point = point;
     this.radius = NODE_RADIUS;
@@ -199,20 +200,22 @@ function addNewEdge(from, to){
     edges.push(edge);
 }
 
-function setupNewNode(parent, node){
+function setupNewNode(parent, node, depth){
     parent.selected(ctx);
     if(parent.objectsOnCanvas.text > node.objectsOnCanvas.text) {
         if (parent.objectsOnCanvas.leftChild !== undefined)
-            setupNewNode(parent.objectsOnCanvas.leftChild, node);
+            setupNewNode(parent.objectsOnCanvas.leftChild, node, depth + 1);
         else {
             parent.setLeftChild(node);
+            node.objectsOnCanvas.depth = depth;
             addNewEdge(parent, node);
         }
     }else if(parent.objectsOnCanvas.text < node.objectsOnCanvas.text) {
         if (parent.objectsOnCanvas.rightChild !== undefined)
-            setupNewNode(parent.objectsOnCanvas.rightChild, node);
+            setupNewNode(parent.objectsOnCanvas.rightChild, node, depth + 1);
         else {
             parent.setRightChild(node);
+            node.objectsOnCanvas.depth = depth;
             addNewEdge(parent, node);
         }
     }
@@ -237,23 +240,68 @@ function updateDepth(node){
     updateDepth(parent);
 }
 
-function addNewNode(){
-    var textEdit = document.getElementById("addNewNode");
+function updatePointForNode(node){
+    var parent = node.objectsOnCanvas.parent;
+    var depth;
+    var point = parent.objectsOnCanvas.point;
+    if(parent.objectsOnCanvas.leftChild === node){
+        parent.objectsOnCanvas.leftDepth = Math.max(node.objectsOnCanvas.leftDepth, node.objectsOnCanvas.rightDepth) + 1;
+        depth = parent.objectsOnCanvas.leftDepth;
+        node.objectsOnCanvas.point = new Point(point.x - D_WIDTH * depth, point.y +  D_HEIGHT)
+    } else {
+        parent.objectsOnCanvas.rightDepth = Math.max(node.objectsOnCanvas.leftDepth, node.objectsOnCanvas.rightDepth) + 1;
+        depth = parent.objectsOnCanvas.rightDepth;
+        node.objectsOnCanvas.point = new Point(point.x + D_WIDTH * depth, point.y +  D_HEIGHT)
+    }
+}
+
+function textExample(){
+    addNewNode(7);
+    addNewNode(3);
+    addNewNode(2);
+    addNewNode(1);
+    addNewNode(4);
+    addNewNode(5);
+    addNewNode(6);
+    addNewNode(11);
+    addNewNode(10);
+    addNewNode(9);
+    printInConsole();
+}
+
+
+function addNewNode(value){
     var obj = Object.create(Objects);
     if(nodes.length === 0) {
-        obj.objectsOnCanvas = new ObjectsOnCanvas("root", ROOT_POINT, parseInt(textEdit.value));
+        obj.objectsOnCanvas = new ObjectsOnCanvas("root", ROOT_POINT, value);
         root = obj;
         root.objectsOnCanvas.level = 1;
     } else {
-        obj.objectsOnCanvas = new ObjectsOnCanvas("node", DEFUALT_POINT, parseInt(textEdit.value));
+        obj.objectsOnCanvas = new ObjectsOnCanvas("node", DEFUALT_POINT, value);
     }
     obj.draw(ctx);
     nodes.push(obj);
     if(nodes.length > 1){
-        setupNewNode(root, obj);
-        updateDepth(obj);
+        setupNewNode(root, obj, 0);
+        console.log("root:");
+        console.log(root);
+        //findNodeWithUpdateDepth(root, obj, 0);
+        //updateDepth(obj);
+        //updatePointForNode(root);
         updateCanvas(ctx);
     }
+}
+
+function printInConsole(){
+    nodes.forEach(function(n){
+        var o = n.objectsOnCanvas;
+        console.log("value = " + o.text + "; leftDepth = " + o.leftDepth + "; rightDepth = " + o.rightDepth);
+    })
+}
+
+function handleClickOnAdd(){
+    var textEdit = document.getElementById("addNewNode");
+    addNewNode(parseInt(textEdit.value));
 }
 
 window.onload = function() {
